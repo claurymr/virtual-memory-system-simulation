@@ -15,6 +15,18 @@
 
 using namespace std;
 
+struct TableEntry 
+{
+  int v;
+  int r;
+  int m;
+  int frame;
+  
+  int timeReferenced;
+  int timeInRAM;
+  
+};
+
 /*---------------------------------------------------------------------------
     Name:  printLogFile
 
