@@ -75,13 +75,32 @@ unsigned int getPageOffset(unsigned int);
 int main(int argc, char *argv[])
 {
   vector<unsigned int> memoryReferences;
+  vector<TableEntry> pageTable;
   
   int* sizeOfProcess = new int[1];
   int* numberMemoryReferences = new int[1];
   int* numberPageFrames = new int[1];
   char* algorithm = new char[20];
-    
+
+  int pagesDiskToRAM = 0;
+  int pagesRAMToDisk = 0;
+  int pageFaults = 0;
+        
   setup(sizeOfProcess, numberMemoryReferences, numberPageFrames, algorithm);
+
+  /*Create Table Entries*/
+  cout << "Page Table" << endl;
+  
+  for(int i = 0; i < *sizeOfProcess; i++)
+    {
+      //TableEntry{v,r,m,frame number,time since last referenced, time in RAM}
+      pageTable.push_back(TableEntry{0,0,0,i,0,0});
+      cout << "Table Entry: " << pageTable[i].v << " "
+	   << pageTable[i].r << " " << pageTable[i].m << " ";
+      
+      printf("%02x\n", pageTable[i].frame);//(2 hexadecimal digits, with leading zeroes)
+      
+    }
 
   /*Push the references obtained from calling reference() to a
     vector of unsigned int*/
@@ -90,6 +109,64 @@ int main(int argc, char *argv[])
     {
       memoryReferences.push_back(reference());
     }
+
+  /*for(auto reference: memoryReferences)
+    {
+      int pageFrames = 0;
+
+      //Replace with function frameAvailable
+      for(auto table: pageTable)
+	{
+	  if (table.v == 1) pageFrames++;
+	}
+
+      updateTableEntries(pageTable, pageNumber);
+
+      if(pageFrames < *numberPageFrames || pageTable[pageNumber].v == 1 )
+	{
+	  int pageNumber = getPageNumber(reference);
+	  char operation = getOperation(reference);
+	  
+	  if(pageTable[pageNumber].v == 0)
+	    {
+	      pageTable[pageNumber].v = 1;
+	      pagesDiskToRAM++;
+	    }
+	  
+	      
+	  if(pageTable[pageNumber].r != 1)
+	    {
+	      pageTable[pageNumber].r = 1;
+	    }
+	      
+	  if(operation == 'W')
+	    {
+	      if(pageTable[pageNumber].m != 1)
+		{
+		  pageTable[pageNumber].m = 1;
+		} 
+	    }
+	  else
+	    {
+	      if(pageTable[pageNumber].m != 0)
+		{
+		  pageTable[pageNumber].m = 0;
+		}
+	    }
+	      
+	}
+      else
+	{
+	  //Returns the index of the table entry to be the victim
+	  int victim = getPageToReplace(*algorithm, pageTable);
+	  
+	}
+      
+	  
+	}*/
+      
+}
+  
 
   printLogFile(memoryReferences); 
   
@@ -150,5 +227,7 @@ unsigned int getPageOffset(unsigned int reference)
 {
   return ((reference & 0x00FFF000) >> 12);
 }
+
+/*void updateTableEntries()*/
 
 
